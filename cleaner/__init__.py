@@ -1,6 +1,4 @@
-untag = lambda: True
-images = lambda: True
-scrub = lambda: True
+from app import untag, images, scrub
 
 commands = {'untag': untag,
             'images': images,
