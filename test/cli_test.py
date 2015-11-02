@@ -2,7 +2,7 @@ import cleaner
 
 def test_parameters():
     keys = cleaner.commands.keys()
-    for k in ['untag', 'images', 'scrub']:
+    for k in ['untag', 'images', 'scrub', 'validate']:
         assert k in keys
 
 def test_bad_parameter_is_error():
