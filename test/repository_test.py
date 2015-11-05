@@ -5,6 +5,14 @@ import json
 import tempfile as t
 from cleaner import repository
 
+def assert_both_ways(expected, actual):
+    for e in expected:
+        assert e in actual
+
+    for a in actual:
+        assert a in expected
+            
+
 def test_repository_tagfiles():
     under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
     expected = ['test_resources/test_registry/repository/dr_clean/bar/tag_1',
@@ -15,8 +23,7 @@ def test_repository_tagfiles():
                 'test_resources/test_registry/repository/dr_clean/foo/tag_3']
     actual = under_test.tagfiles()
 
-    for e in expected:
-        assert e in actual
+    assert_both_ways(expected, actual)
         
 
 def test_repository_referenced_images():
@@ -42,11 +49,7 @@ def test_repository_tagged_images():
 
     actual = list(under_test.tagged_images())
 
-    for e in expected:
-        assert e in actual
-
-    for a in actual:
-        assert a in expected
+    assert_both_ways(expected, actual)
         
 
 def test_repository_all_images():
@@ -58,8 +61,20 @@ def test_repository_all_images():
 
     actual = under_test.all_images()
 
-    for e in expected:
-        assert e in actual
+    assert_both_ways(expected, actual)
+    
+def test_repository_validate():
+    under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
 
-    for a in actual:
-        assert a in expected
+    result = under_test.validate()
+    assert result == set()
+
+
+def test_repository_unused_images():
+    under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
+    
+    expected = ['ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b']
+
+    actual = under_test.unused_images()
+
+    assert_both_ways(expected, actual)

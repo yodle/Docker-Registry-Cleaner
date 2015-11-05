@@ -14,8 +14,20 @@ class Repository(object):
         self.images = images
 
     def validate(self):
+        """Returns the set of referenced images not found in the repository. 
+           An empty set means the registry is in a valid state"""
         referenced_images = self.referenced_images()
-        all_images = self.all_images()
+        all_images = set(self.all_images())
+
+        if referenced_images.issubset(all_images):
+            set()
+        
+        diff = referenced_images - all_images
+        return diff
+
+    def unused_images(self):
+        return set(self.all_images()) - self.referenced_images()
+        
         
     def tagged_images(self):
         for tf in self.tagfiles():
