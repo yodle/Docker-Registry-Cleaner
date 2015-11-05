@@ -5,49 +5,40 @@ import json
 import tempfile as t
 from cleaner import repository
 
-def construct_repository():
-    """ Construct a mock repository on disk
-    /root
-    \____repo_path
-    |    \____namespace
-    |         \____repo
-    \____images    \____[tags]
-                   \____[data]
-    """
-    rootpath = t.mkdtemp()
-    repo_path = t.mkdtemp(dir=rootpath, prefix="repo")
-    img_path = t.mkdtemp(dir=rootpath, prefix="img")
-    img = t.mkdtemp(dir=img_path)    
-    namespace = t.mkdtemp(dir=repo_path, prefix="ns")
-    repo_data = t.mkdtemp(dir=namespace, prefix="data")
-    tags = [t.mkstemp(dir=repo_data, prefix='tag_')[1] for _ in range(10)]
-    data = [t.mkstemp(dir=repo_data, prefix='data_')[1] for _ in range(10)]
+def test_repository_tagfiles():
+    under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
+    expected = ['test_resources/test_registry/repository/dr_clean/bar/tag_1',
+                'test_resources/test_registry/repository/dr_clean/bar/tag_2',
+                'test_resources/test_registry/repository/dr_clean/bar/tag_3',
+                'test_resources/test_registry/repository/dr_clean/foo/tag_1',
+                'test_resources/test_registry/repository/dr_clean/foo/tag_2',
+                'test_resources/test_registry/repository/dr_clean/foo/tag_3']
+    actual = under_test.tagfiles()
 
-    for tg in tags:
-        with open(tg, 'wb') as f:
-            f.write(p.basename(img))
+    for e in expected:
+        assert e in actual
 
-    with open(img + "/ancestry", 'w') as g:
-        g.write(json.dumps([p.basename(img)]))
+def test_repository_referenced_images():
+    under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
 
-    return repository.Repository(rootpath,
-                                 repositories=p.basename(repo_path),
-                                 images=p.basename(img_path)), tags, img
+    expected = {u'7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef',
+                u'ffff2732b9f49d2dbdd24545446398242d9e380dd615c4ddb61eadd4aa88ac02'}
 
-def test_tagged_images():
-    store, tags, _ = construct_repository()
-    result = [r for r in store.tagged_images()]
-    expected = []
-    for t in tags:
-        with open(t) as f:
-            expected.append(f.read())
-    assert len(result) == len(expected) == 10
+    actual = under_test.referenced_images()
 
-    for r in result:
-        assert r in expected
+    assert actual == expected
 
-def test_referenced_images():
-    store, _, img = construct_repository()
-    result = next(store.ancestry(img))
-    assert result == p.basename(img), (result, img)
-    
+def test_repository_tagged_images():
+    under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
+
+    expected = ['7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef',
+                '7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef',
+                '7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef',
+                '7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef',
+                '7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef',
+                '7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef']
+
+    actual = list(under_test.tagged_images())
+
+    for e in expected:
+        assert e in actual

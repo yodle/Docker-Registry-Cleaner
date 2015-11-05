@@ -7,28 +7,29 @@ import os
 from os.path import join, basename
 import json
 
-def tagged_images(store):
-    for tf in store.tagfiles():
-        try:
-            with open(tf, mode='rb') as f:
-                yield f.read()
-        except Exception:
-            continue
-        
-
 class Repository(object):
     def __init__(self, root_path, repositories, images):
         self.root_path = root_path
         self.repositories = repositories
         self.images = images
 
+    def validate(self):
+        referenced_images = self.referenced_images()
+        all_images = self.all_images()
+        
     def tagged_images(self):
         for tf in self.tagfiles():
             try:
                 with open(tf, mode='rb') as f:
-                    yield f.read()
-            except (IOError, OSError) as e: 
+                    yield f.read().strip()
+            except (IOError, OSError) as e:
+                print(e)
                 continue
+
+    def referenced_images(self):
+        """Returns a set of referenced image ids"""
+        return {a for i in self.tagged_images()
+                  for a in self.ancestry(i)}
 
     def ancestry(self, image_id):
         p = join(self.root_path, self.images, image_id, "ancestry")

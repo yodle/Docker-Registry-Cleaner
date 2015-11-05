@@ -1,4 +1,5 @@
 from app import untag, images, scrub, validate
+import repository
 
 commands = {'untag': untag,
             'images': images,
