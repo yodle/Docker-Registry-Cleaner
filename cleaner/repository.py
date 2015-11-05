@@ -26,6 +26,10 @@ class Repository(object):
                 print(e)
                 continue
 
+    def all_images(self):
+        path = join(self.root_path, self.images)
+        return os.listdir(path)
+
     def referenced_images(self):
         """Returns a set of referenced image ids"""
         return {a for i in self.tagged_images()
