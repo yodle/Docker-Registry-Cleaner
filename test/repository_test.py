@@ -17,6 +17,7 @@ def test_repository_tagfiles():
 
     for e in expected:
         assert e in actual
+        
 
 def test_repository_referenced_images():
     under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
@@ -27,6 +28,7 @@ def test_repository_referenced_images():
     actual = under_test.referenced_images()
 
     assert actual == expected
+    
 
 def test_repository_tagged_images():
     under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
@@ -45,6 +47,7 @@ def test_repository_tagged_images():
 
     for a in actual:
         assert a in expected
+        
 
 def test_repository_all_images():
     under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
