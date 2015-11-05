@@ -28,7 +28,6 @@ class Repository(object):
     def unused_images(self):
         return set(self.all_images()) - self.referenced_images()
         
-        
     def tagged_images(self):
         for tf in self.tagfiles():
             try:
@@ -65,4 +64,9 @@ class Repository(object):
                                    for t in os.listdir(d)]
 
         return filter(lambda t: basename(t).startswith('tag_'), tags)
+
+    def get_size(self, image_id):
+        path = join(self.root_path, self.images, image_id)
+        return os.path.getsize(path)
+
     
