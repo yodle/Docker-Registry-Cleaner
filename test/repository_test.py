@@ -78,4 +78,10 @@ def test_repository_get_size():
 
     assert expected == actual, actual
 
+
+def test_repository_report():
+    expected = {'ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b': 136}
+    actual = under_test.report()
+
+    assert expected == actual
     

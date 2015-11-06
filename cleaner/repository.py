@@ -8,7 +8,7 @@ from os.path import join, basename
 import json
 
 class Repository(object):
-    def __init__(self, root_path, repositories, images):
+    def __init__(self, root_path, repositories='repository', images='images'):
         self.root_path = root_path
         self.repositories = repositories
         self.images = images
@@ -24,6 +24,21 @@ class Repository(object):
         
         diff = referenced_images - all_images
         return diff
+
+    def report(self):
+        image_ids = self.unused_images()
+        total_size = 0
+
+        report = {}
+        for image_id in image_ids:
+            try:
+                size = self.get_size(image_id)
+            except Exception as e:
+                print(e)
+                size = 0
+            report[image_id] = size
+        return report                    
+    
 
     def unused_images(self):
         return set(self.all_images()) - self.referenced_images()
