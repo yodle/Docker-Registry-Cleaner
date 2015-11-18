@@ -6,6 +6,8 @@ Based on code from https://github.com/docker/docker-registry by Docker
 import os
 from os.path import join, basename
 import json
+import tempfile
+from credentials import username, password
 
 class Repository(object):
     def __init__(self, root_path, repositories='repository', images='images'):
@@ -16,29 +18,32 @@ class Repository(object):
     def validate(self):
         """Returns the set of referenced images not found in the repository. 
            An empty set means the registry is in a valid state"""
+        
         referenced_images = self.referenced_images()
         all_images = set(self.all_images())
-
-        if referenced_images.issubset(all_images):
-            set()
         
         diff = referenced_images - all_images
         return diff
 
     def report(self):
-        image_ids = self.unused_images()
-        total_size = 0
-
-        report = {}
-        for image_id in image_ids:
+        def get_size(img_id):
             try:
-                size = self.get_size(image_id)
-            except Exception as e:
-                print(e)
-                size = 0
-            report[image_id] = size
-        return report                    
-    
+                return self.get_size(img_id)
+            except:
+                return -1
+
+        report = {i: get_size(i) for i in self.unused_images()}
+        return report
+
+
+    def untag(self):
+        pass
+
+    def purge(self, delete=False):
+        pass
+
+    def revert(self, source, images=None):
+        pass
 
     def unused_images(self):
         return set(self.all_images()) - self.referenced_images()
@@ -83,5 +88,10 @@ class Repository(object):
     def get_size(self, image_id):
         path = join(self.root_path, self.images, image_id)
         return os.path.getsize(path)
+
+    def remove(self, image_id, delete=False, dryrun=False):
+        path = self.join(self.root_path, self.images, image_id)
+        tmp = tempfile
+        
 
     

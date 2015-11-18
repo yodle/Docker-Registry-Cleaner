@@ -7,6 +7,7 @@ from cleaner import repository
 
 under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
 
+
 def assert_both_ways(expected, actual):
     for e in expected:
         assert e in actual
@@ -57,12 +58,26 @@ def test_repository_all_images():
     actual = under_test.all_images()
 
     assert_both_ways(expected, actual)
+
     
-def test_repository_validate():
+def test_repository_validate_valid_registry():
+    under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
+    under_test.referenced_images = lambda: set([1,2,3,4])
+    under_test.all_images = lambda: set([1,2,3,4,5,6,7,8])
+    
     result = under_test.validate()
     assert result == set()
 
+    
+def test_repository_validate_invalid_registry():
+    under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
+    under_test.referenced_images = lambda: set([1,2,3,4,5,6,7,8])
+    under_test.all_images = lambda: set([1,2,3,4])
+    
+    result = under_test.validate()
+    assert result == set([5,6,7,8])
 
+    
 def test_repository_unused_images():
     expected = ['ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b']
 
@@ -70,6 +85,7 @@ def test_repository_unused_images():
 
     assert_both_ways(expected, actual)
 
+    
 def test_repository_get_size():
     image_id = '7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef'
 
@@ -78,9 +94,15 @@ def test_repository_get_size():
 
     assert expected == actual, actual
 
-
+    
 def test_repository_report():
-    expected = {'ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b': 136}
+    under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
+    under_test.unused_images = lambda: ['ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b',
+                                        'does_not_exist']
+
+    expected = {'ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b': 136,
+                'does_not_exist': -1}
+
     actual = under_test.report()
 
     assert expected == actual

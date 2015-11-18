@@ -2,6 +2,10 @@
 
 Current docker registries don't have great tools for cleanup. This fills the gap before it fills your disk.
 
+# Warning
+
+This was developed against a single docker repository. Please use the dry-run/safe mode until you're confident it won't destroy your installation.
+
 # Usage
 
 Set up a cron job to run the script at whatever interval is best for your repository.
