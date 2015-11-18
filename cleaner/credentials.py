@@ -1,0 +1,2 @@
+username = "repouser"
+password = "repopass"
