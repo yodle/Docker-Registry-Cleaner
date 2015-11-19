@@ -14,8 +14,15 @@ def assert_both_ways(expected, actual):
 
     for a in actual:
         assert a in expected
+        
             
+def test_repository_ancestry_is_empty_if_does_not_exist():
+    expected = []
+    result = under_test.ancestry('not a file')
 
+    assert expected == [r for r in result]
+    
+        
 def test_repository_tagfiles():
     expected = ['test_resources/test_registry/repository/dr_clean/bar/tag_1',
                 'test_resources/test_registry/repository/dr_clean/bar/tag_2',

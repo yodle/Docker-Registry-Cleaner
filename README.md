@@ -2,9 +2,15 @@
 
 Current docker registries don't have great tools for cleanup. This fills the gap before it fills your disk.
 
+# Installing
+
+`pip install docker-registry-cleaner`
+
+You will need to change the credentials.py file to have the correct username and password for your docker registry.
+
 # Warning
 
-This was developed against a single docker repository. Please use the dry-run/safe mode until you're confident it won't destroy your installation.
+This was developed against our docker repository. If your registry is different, it may cause problems. Please back up your registry and use scrub rather than purge until you are confident it works for your setup.
 
 # Usage
 
@@ -22,13 +28,10 @@ If you are using safe deletes, then you can also restore with
 
 This might be wise if you have frequent enough pushes. There is a race condition where an image may be pushed, but the reference is not written to disk yet, and it will be picked up for deletion. This won't happen if your $KEEP window is long enough though.
 
-# Configuration Options
+# Contributing
 
-TODO: Write me!
+Pull requests are welcome! All tests must pass and be pep8 compliant. .
 
-# Installing
-
-TODO: Create setup and push to pypi
-
+# License
 
 Apache 2 Licensed.

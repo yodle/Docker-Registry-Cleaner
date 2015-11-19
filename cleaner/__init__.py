@@ -1,12 +1,2 @@
-from app import untag, images, scrub, validate
-import repository
-
-commands = {'untag': untag,
-            'images': images,
-            'scrub': scrub,
-            'validate': validate}
-
-def run(command):
-    if not command in commands:
-        raise ValueError()
-    return commands[command]()
+"""Docker Registry Cleaner.
+   Provides functions to untag, purge, validate and report on the state of the registry"""

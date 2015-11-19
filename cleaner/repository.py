@@ -3,14 +3,19 @@ Docker repository on-disk model
 Based on code from https://github.com/docker/docker-registry by Docker
 """
 
-import os
-from os.path import join, basename
 import json
+import logging
+import os
+import shutil
 import tempfile
+
+from os.path import join, basename, isfile
+
 from credentials import username, password
 
+
 class Repository(object):
-    def __init__(self, root_path, repositories='repository', images='images'):
+    def __init__(self, root_path, repositories='repositories', images='images'):
         self.root_path = root_path
         self.repositories = repositories
         self.images = images
@@ -39,20 +44,15 @@ class Repository(object):
     def untag(self):
         pass
 
-    def purge(self, delete=False):
-        pass
-
-    def revert(self, source, images=None):
-        pass
-
     def unused_images(self):
         return set(self.all_images()) - self.referenced_images()
         
     def tagged_images(self):
         for tf in self.tagfiles():
             try:
-                with open(tf, mode='rb') as f:
-                    yield f.read().strip()
+                with open(tf, mode='r') as f:
+                    result = f.read().strip()
+                    yield result
             except (IOError, OSError) as e:
                 print(e)
                 continue
@@ -68,9 +68,12 @@ class Repository(object):
 
     def ancestry(self, image_id):
         p = join(self.root_path, self.images, image_id, "ancestry")
-        with open(p, mode='rb') as f:
+        if not isfile(p):
+            return iter([])
+        with open(p, mode='r') as f:
             data = f.read()
-            return iter(json.loads(data))
+            result = iter(json.loads(data))
+            return result
         
     def tagfiles(self):
         """Returns a list of all tagfiles in the repository"""
@@ -89,9 +92,19 @@ class Repository(object):
         path = join(self.root_path, self.images, image_id)
         return os.path.getsize(path)
 
-    def remove(self, image_id, delete=False, dryrun=False):
-        path = self.join(self.root_path, self.images, image_id)
-        tmp = tempfile
+    def remove(self, image_id):
+        path = join(self.root_path, self.images, image_id)
+        tmp = tempfile.mkdtemp(prefix='unused-images')
+        print("Moving %s to %s" % (path, tmp))
+        shutil.move(path, tmp)        
         
-
-    
+    def revert(self, source):
+        image_path = join(self.root_path, self.images)
+        for dirs in os.listdir(source):
+            path = join(source, dirs)
+            try:
+                print("Moving %s to %s" % (path, image_path))
+                shutil.move(path, image_path)
+            except shutil.Error as e:
+                print(e)
+                continue
