@@ -1,14 +1,8 @@
-from zeke import commands
+import os
 
-zk_host = commands.get_zk_hosts(None)
-zk = commands.get_zk(zk_host[0])
+REGISTRY_USERNAME = "DOCKER_REGISTRY_USER"
+REGISTRY_PASSWORD = "DOCKER_REGISTRY_PASS"
 
-def get_value_safely(val):
-    try:
-        return zk.get_value(val)
-    except:
-        return ""
-    
+username = os.getenv(REGISTRY_USERNAME)
+password = os.getenv(REGISTRY_PASSWORD)
 
-username = get_value_safely('/credentials/yodle_docker_registry/username')
-password = get_value_safely('/credentials/yodle_docker_registry/password')
