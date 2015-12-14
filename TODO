@@ -1,0 +1,15 @@
+Make note that people should use tags to keep track of necessary images UNTAG
+
+Move credentials to property files
+
+Add more tests to remove TODOs
+
+Add more Yodle to README
+
+Put verbal preface into README, general use case of how you would want to use this
+
+Describe how to run tests and check pep8 compliance
+
+Check validity against python2 and 3
+
+Wait for Legal to amend contribution agreement
