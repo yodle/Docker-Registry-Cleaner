@@ -8,15 +8,20 @@ This tool is best used as a scheduled task, to periodicly remove cruft from your
 
 # Installing
 
-`pip install docker-registry-cleaner`
+To use this cleaner, clone the repository and run `python cleaner` from the project root
 
-You will need to change the credentials.py file to have the correct username and password for your docker registry.
+Coming soon: `pip install docker-registry-cleaner`
+
 
 # Warning
 
 This was developed against our docker repository. If your registry is different, it may cause problems. Please back up your registry and use scrub rather than purge until you are confident it works for your setup. In particular, this tool assumes you are storing your images directly on disk. It has not been designed to work with other storage drivers yet.
 
 # Usage
+
+In order to authenticate against your registry, you need to set the following environment variables:
+
+`registry_username` and `registry_password`
 
     usage: cleaner [-h] [--hostname [HOSTNAME [HOSTNAME ...]]] [--path PATH]
                repository command
