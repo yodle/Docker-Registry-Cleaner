@@ -1,4 +1,8 @@
 #!/usr/bin/env python
 import app
 
-app.main()
+def main():
+    app.main()
+
+if __name__ == '__main__':
+    main()
