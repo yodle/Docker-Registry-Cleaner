@@ -43,7 +43,7 @@ setup(
         'test': [],
     },
 
-    package_data={}
+    package_data={},
 
 
     # To provide executable scripts, use entry points in preference to the
