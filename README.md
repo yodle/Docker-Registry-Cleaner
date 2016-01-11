@@ -1,4 +1,4 @@
-** Docker Registry Cleaner Tools **
+**Docker Registry Cleaner Tools**
 
 At [Yodle](http://www.yodle.com/), we started using Docker with a privately hosted [Docker Registry](https://github.com/docker/docker-registry). This was great until we discovered that the registry had no tools to cleanup old, unused images! Our disks began to fill up, so this was created to fill the gap.
 
