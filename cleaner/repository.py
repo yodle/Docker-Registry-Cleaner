@@ -11,7 +11,11 @@ import tempfile
 
 from os.path import join, basename, isfile, getsize
 
-from credentials import username, password
+try:
+    from credentials import username, password
+except: 
+    from cleaner.credentials import username, password
+    print(os.getcwd())
 
 
 class Repository(object):

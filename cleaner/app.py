@@ -2,7 +2,11 @@ import argparse
 import sys
 import pprint
 
-from repository import Repository
+try:
+    from repository import Repository
+except:
+    from cleaner.repository import Repository
+
 pp = pprint.PrettyPrinter(indent=4)
     
 def parse_args():
