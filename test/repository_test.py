@@ -94,10 +94,13 @@ def test_repository_unused_images():
 
     
 def test_repository_get_size():
+    old_getsize = repository.getsize
+    repository.getsize = lambda _: 9991
     image_id = '7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef'
 
-    expected = 136
+    expected = 9991
     actual = under_test.get_size(image_id)
+    repository.getsize = old_getsize
 
     assert expected == actual, actual
 

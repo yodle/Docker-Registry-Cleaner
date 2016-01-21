@@ -9,7 +9,7 @@ import os
 import shutil
 import tempfile
 
-from os.path import join, basename, isfile
+from os.path import join, basename, isfile, getsize
 
 from credentials import username, password
 
@@ -90,7 +90,7 @@ class Repository(object):
 
     def get_size(self, image_id):
         path = join(self.root_path, self.images, image_id)
-        return os.path.getsize(path)
+        return getsize(path)
 
     def remove(self, image_id):
         path = join(self.root_path, self.images, image_id)
