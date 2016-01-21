@@ -100,20 +100,23 @@ def test_repository_get_size():
 
     expected = 9991
     actual = under_test.get_size(image_id)
-    repository.getsize = old_getsize
 
+    repository.getsize = old_getsize
     assert expected == actual, actual
 
     
 def test_repository_report():
+    old_getsize = repository.getsize
+    repository.getsize = lambda _: 4002
     under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
     under_test.unused_images = lambda: ['ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b',
                                         'does_not_exist']
 
-    expected = {'ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b': 136,
-                'does_not_exist': -1}
+    expected = {'ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b': 4002,
+                'does_not_exist': 4002}
 
     actual = under_test.report()
 
-    assert expected == actual
+    repository.getsize = old_getsize
+    assert expected == actual, actual
     
