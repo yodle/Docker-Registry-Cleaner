@@ -14,15 +14,15 @@ def assert_both_ways(expected, actual):
 
     for a in actual:
         assert a in expected
-        
-            
+
+
 def test_repository_ancestry_is_empty_if_does_not_exist():
     expected = []
     result = under_test.ancestry('not a file')
 
     assert expected == [r for r in result]
-    
-        
+
+
 def test_repository_tagfiles():
     expected = ['test_resources/test_registry/repository/dr_clean/bar/tag_1',
                 'test_resources/test_registry/repository/dr_clean/bar/tag_2',
@@ -33,7 +33,7 @@ def test_repository_tagfiles():
     actual = under_test.tagfiles()
 
     assert_both_ways(expected, actual)
-        
+
 
 def test_repository_referenced_images():
     expected = {u'7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef',
@@ -42,7 +42,7 @@ def test_repository_referenced_images():
     actual = under_test.referenced_images()
 
     assert actual == expected
-    
+
 
 def test_repository_tagged_images():
     expected = ['7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef',
@@ -55,7 +55,7 @@ def test_repository_tagged_images():
     actual = list(under_test.tagged_images())
 
     assert_both_ways(expected, actual)
-        
+
 
 def test_repository_all_images():
     expected = ['7f55f4c9f6942af8bc2fb123de04a7296b78536daeca5670e16893b0d0ca67ef',
@@ -66,25 +66,25 @@ def test_repository_all_images():
 
     assert_both_ways(expected, actual)
 
-    
+
 def test_repository_validate_valid_registry():
     under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
     under_test.referenced_images = lambda: set([1,2,3,4])
     under_test.all_images = lambda: set([1,2,3,4,5,6,7,8])
-    
+
     result = under_test.validate()
     assert result == set()
 
-    
+
 def test_repository_validate_invalid_registry():
     under_test = repository.Repository('test_resources/test_registry/', 'repository', 'images')
     under_test.referenced_images = lambda: set([1,2,3,4,5,6,7,8])
     under_test.all_images = lambda: set([1,2,3,4])
-    
+
     result = under_test.validate()
     assert result == set([5,6,7,8])
 
-    
+
 def test_repository_unused_images():
     expected = ['ffd06b1ded5fc51266eb26ab8592df609295b69a5057f11a6aa00e7c1efceb9b']
 
@@ -92,7 +92,7 @@ def test_repository_unused_images():
 
     assert_both_ways(expected, actual)
 
-    
+
 def test_repository_get_size():
     old_getsize = repository.getsize
     repository.getsize = lambda _: 9991
@@ -104,7 +104,7 @@ def test_repository_get_size():
     repository.getsize = old_getsize
     assert expected == actual, actual
 
-    
+
 def test_repository_report():
     old_getsize = repository.getsize
     repository.getsize = lambda _: 4002
@@ -119,4 +119,3 @@ def test_repository_report():
 
     repository.getsize = old_getsize
     assert expected == actual, actual
-    
