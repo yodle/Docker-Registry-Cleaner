@@ -13,7 +13,7 @@ from os.path import join, basename, isfile, getsize
 
 try:
     from credentials import username, password
-except: 
+except:
     from cleaner.credentials import username, password
     print(os.getcwd())
 
@@ -25,12 +25,12 @@ class Repository(object):
         self.images = images
 
     def validate(self):
-        """Returns the set of referenced images not found in the repository. 
+        """Returns the set of referenced images not found in the repository.
            An empty set means the registry is in a valid state"""
-        
+
         referenced_images = self.referenced_images()
         all_images = set(self.all_images())
-        
+
         diff = referenced_images - all_images
         return diff
 
@@ -50,7 +50,7 @@ class Repository(object):
 
     def unused_images(self):
         return set(self.all_images()) - self.referenced_images()
-        
+
     def tagged_images(self):
         for tf in self.tagfiles():
             try:
@@ -78,19 +78,13 @@ class Repository(object):
             data = f.read()
             result = iter(json.loads(data))
             return result
-        
+
     def tagfiles(self):
         """Returns a list of all tagfiles in the repository"""
-        # Functional directory walking!
-        base = join(self.root_path, self.repositories)
-        namespaces = [join(base, d) for d in os.listdir(base)]
-        repos = {ns: os.listdir(ns) for ns in namespaces}
-        tag_dirs = [os.path.join(r, t) for r in repos
-                                       for t in repos[r]]
-        tags = [os.path.join(d, t) for d in tag_dirs
-                                   for t in os.listdir(d)]
-
-        return filter(lambda t: basename(t).startswith('tag_'), tags)
+        return [os.path.join(root, name)
+                for root, _, fs in os.walk(self.root_path)
+                for name in fs
+                if name.startswith('tag_')]
 
     def get_size(self, image_id):
         path = join(self.root_path, self.images, image_id)
@@ -100,8 +94,8 @@ class Repository(object):
         path = join(self.root_path, self.images, image_id)
         tmp = tempfile.mkdtemp(prefix='unused-images')
         print("Moving %s to %s" % (path, tmp))
-        shutil.move(path, tmp)        
-        
+        shutil.move(path, tmp)
+
     def revert(self, source):
         image_path = join(self.root_path, self.images)
         for dirs in os.listdir(source):
