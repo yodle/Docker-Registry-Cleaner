@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import os
 from cleaner.tag import Tag
 
+
 class DockerProject(object):
     """A project within a docker registry"""
 
@@ -35,7 +36,8 @@ class DockerProject(object):
         return self._flattags
 
     def tags(self, environment):
-        ekey = lambda t: t.environment
+        def ekey(t):
+            return t.environment
         if not hasattr(self, '_tags'):
             result = {}
             sorted_tags = sorted(self.flat_tags, key=ekey)
